@@ -15,18 +15,18 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'phone'    => ['required', 'string', 'max:20', 'unique:users,phone'],
+            'email'    => ['required', 'string', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
         ], [
-            'phone.required'    => 'Le numéro de téléphone est obligatoire.',
-            'phone.unique'      => 'Ce numéro de téléphone est déjà utilisé.',
+            'email.required'    => 'Le mail est obligatoire.',
+            'email.unique'      => 'Ce mail est déjà utilisé.',
             'password.required' => 'Le mot de passe est obligatoire.',
             'password.min'      => 'Le mot de passe doit contenir au moins 6 caractères.',
             'password.confirmed'=> 'Les mots de passe ne correspondent pas.',
         ]);
 
         $user = User::create([
-            'phone'    => $request->phone,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
             'wallet'   => 0,
         ]);
@@ -37,7 +37,7 @@ class AuthController extends Controller
             'message' => 'Compte créé avec succès.',
             'user'    => [
                 'id'     => $user->id,
-                'phone'  => $user->phone,
+                'email'  => $user->email,
                 'wallet' => $user->wallet,
             ],
             'token' => $token,
@@ -50,15 +50,15 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'phone'    => ['required', 'string'],
+            'email'    => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
-        $user = User::where('phone', $request->phone)->first();
+        $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'phone' => ['Numéro de téléphone ou mot de passe incorrect.'],
+                'email' => ['Email ou mot de passe incorrect.'],
             ]);
         }
 
@@ -71,7 +71,7 @@ class AuthController extends Controller
             'message' => 'Connexion réussie.',
             'user'    => [
                 'id'     => $user->id,
-                'phone'  => $user->phone,
+                'email'  => $user->email,
                 'wallet' => $user->wallet,
             ],
             'token' => $token,
@@ -99,7 +99,7 @@ class AuthController extends Controller
 
         return response()->json([
             'id'     => $user->id,
-            'phone'  => $user->phone,
+            'email'  => $user->email,
             'wallet' => $user->wallet,
         ]);
     }

@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class TaskController extends Controller
 {
-    private const GAIN_PAR_TACHE = 2.00;
+    private const GAIN_PAR_TACHE = 5.00;
 
     /**
      * Generate a new task with two unique references

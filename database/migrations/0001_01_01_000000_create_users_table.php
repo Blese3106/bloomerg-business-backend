@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('phone', 20)->unique();
+            $table->string('email')->unique();
             $table->string('password');
             $table->decimal('wallet', 10, 2)->default(0);
             $table->rememberToken();

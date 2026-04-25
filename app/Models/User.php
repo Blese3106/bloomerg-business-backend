@@ -11,7 +11,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory;
 
     protected $fillable = [
-        'phone',
+        'email',
         'password',
         'wallet',
     ];
@@ -28,5 +28,10 @@ class User extends Authenticatable
     public function transactions()
     {
         return $this->hasMany(Transaction::class)->latest();
+    }
+
+    public function withdrawalRequests()
+    {
+        return $this->hasMany(WithdrawalRequest::class)->latest();
     }
 }
