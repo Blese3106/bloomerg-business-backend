@@ -18,13 +18,12 @@ return [
     'paths'                    => ['api/*', 'sanctum/csrf-cookie'],
     'allowed_methods'          => ['*'],
     'allowed_origins' => [
-        'https://bloomerg-business-frontend1.vercel.app',
         'https://bloomerg-business-frontend1-nib2oftsr-blese3106s-projects.vercel.app'
     ],
     'allowed_origins_patterns' => [],
     'allowed_headers'          => ['*'],
     'exposed_headers'          => [],
     'max_age'                  => 0,
-    'supports_credentials'     => false,
+    'supports_credentials'     => true,
 
 ];
