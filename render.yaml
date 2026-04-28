@@ -1,0 +1,84 @@
+services:
+  - type: web
+    name: bloomerg-business
+    env: docker
+    plan: starter
+    region: Oregon (US West)
+    branch: prod
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /up
+    autoDeploy: true
+
+disk:
+  - name: bloomerg
+    mountPath: /var/data
+    sizeGB: 1
+
+    envVars:
+      - key: APP_NAME
+        value: bloomerg
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        sync: false
+      - key: LOG_CHANNEL
+        value: stack
+      - key: LOG_LEVEL
+        value: error
+      - key: SESSION_DRIVER
+        value: database
+      - key: SESSION_SECURE_COOKIE
+        value: "true"
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: FILESYSTEM_DISK
+        value: local
+      - key: TRUSTED_PROXIES
+        value: "*"
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: bloomerg
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: bloomerg
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: bloomerg
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: bloomerg
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: bloomerg
+          property: password
+      - key: MAIL_MAILER
+        sync: false
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_ENCRYPTION
+        sync: false
+
+databases:
+  - name: bloomerg-business
+    plan: starter
+    databaseName: bloomerg
+    user: bloomerg_user
+    region: Oregon (US West)

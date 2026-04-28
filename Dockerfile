@@ -1,35 +1,45 @@
-FROM php:8.4-cli
+FROM php:8.2-fpm
 
 # Installer dépendances système
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    zip \
-    unzip \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev
+    git curl zip unzip nginx supervisor \
+    libpng-dev libonig-dev libxml2-dev libpq-dev \
+    libzip-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Installer extensions PHP nécessaires
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+# Installer extensions PHP
+RUN docker-php-ext-install \
+    pdo pdo_pgsql pgsql \
+    mbstring exif pcntl bcmath gd zip
 
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Définir le dossier de travail
 WORKDIR /var/www
 
-# Copier les fichiers du projet
+# Copier fichiers composer (optimisation cache)
+COPY composer.json composer.lock ./
+
+# Installer dépendances Laravel
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+# Copier tout le projet
 COPY . .
 
-# Installer les dépendances Laravel
-RUN composer install --no-dev --optimize-autoloader
+# Permissions Laravel
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 775 storage bootstrap/cache
 
-# Donner les permissions
-RUN chmod -R 775 storage bootstrap/cache
+# Config Nginx
+COPY docker/nginx.conf /etc/nginx/sites-available/default
 
-# Exposer le port
-EXPOSE 10000
+# Config Supervisor
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Commande de démarrage
-CMD php artisan serve --host=0.0.0.0 --port=10000
+# Script de démarrage
+COPY docker/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+EXPOSE 80
+
+CMD ["/usr/local/bin/start.sh"]
