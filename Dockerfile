@@ -21,10 +21,12 @@ WORKDIR /var/www
 COPY composer.json composer.lock ./
 
 # Installer dépendances Laravel
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer install --no-dev --no-scripts --optimize-autoloader --no-interaction
 
 # Copier tout le projet
 COPY . .
+
+RUN composer dump-autoload --optimize
 
 # Permissions Laravel
 RUN chown -R www-data:www-data /var/www \
