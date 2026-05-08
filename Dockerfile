@@ -5,12 +5,13 @@ RUN apt-get update && apt-get install -y \
     git curl zip unzip nginx supervisor \
     libpng-dev libonig-dev libxml2-dev libpq-dev \
     libzip-dev \
+    libicu-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Installer extensions PHP
 RUN docker-php-ext-install \
     pdo pdo_pgsql pgsql \
-    mbstring exif pcntl bcmath gd zip
+    mbstring exif pcntl bcmath gd zip intl
 
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
