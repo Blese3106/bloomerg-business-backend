@@ -17,6 +17,7 @@ php /var/www/artisan migrate --force
 php /var/www/artisan config:cache
 php /var/www/artisan route:cache
 php /var/www/artisan view:cache
+php /var/www/artisan filament:assets
 
 echo "Laravel ready!"
 
