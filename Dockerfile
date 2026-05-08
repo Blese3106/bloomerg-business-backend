@@ -29,6 +29,8 @@ COPY . .
 
 RUN composer dump-autoload --optimize
 
+RUN php artisan filament:assets --no-interaction || true
+
 # Permissions Laravel
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 storage bootstrap/cache
